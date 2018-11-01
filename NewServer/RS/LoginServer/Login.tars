@@ -1,0 +1,32 @@
+module ServerEngine
+{
+    enum enRet
+    {
+        enRet_OK = 0,
+        enRet_FAIL = 1,
+    };
+
+    struct LoginSession
+    {
+        0 require int dwGatewayID;
+        1 require int loginTempID;
+        2 require string strIp;
+        3 require int wdPort;
+        4 optional int accid;
+        5 optional int uid;
+        6 require int state;
+        7 require string strPassWd;
+        8 optional string strAccount;
+        9 optional string strName;
+    };
+
+    interface Login
+    {
+        
+
+        int modifyAccid(int userid, int newAccid,out string tip);
+        int modifyMobile(int userid, string newMobile,out string tip);
+        int modifyPassWord(int userid, string newPassWd,out string tip);
+        int lockUser(int userid, int NewLockState,int lockMin ,out long  lockTime,out string tip);
+    };
+};
