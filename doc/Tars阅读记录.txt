@@ -1,0 +1,35 @@
+1.netThread 对象，网络线程，每个线程创建epoll， 0号线程负责绑定端口，新的连接过来时候根据fd 与 网络线程的个数进行平均分配。
+2.所有收到的包，放入到bindAdapter中， 一个sevant 一个BindAdapter。 每个Sverant 服务一个自己的消息队列。
+3.handle 是业务线程，负责从bindAdapter中获取现象，并且处理。业务线程可以配置多个。每个Sveant有自己的业务线程，并且从自己的binAdapter中获取消息处理。 但是网络线程是公用的。
+4.handle 线程组复用，我们不同的bindAdapter 可以复用一个线程组来处理处理逻辑。
+5.handle 的消息报，如果使用非tars协议，servant 对象对管道对应的二进制包，协议解析和处理 玩家自己处理。
+6.servanthanle是业务线程， servant（imp）是业务处理对象实体。 sevanthandle 知识业务线程，不同adpter的servant 可以复用servant handle。
+7.
+
+
+客户端：
+注：每个服务可能不部署在不同的区域，不同组中，所有每个服务可能有多个节点，客户端需要维护这些节点，根据权重进行选择。要考虑服务负载均衡，容灾处理，即插即用。
+1.客户端的业务处理实体是ServantProxy，自动生成的代码就是继承与ServantProxy 实体。
+2.客户端的网络监听线程是CommunicatorEpoll，是一个网络线程组CommunicatorEpoll[n]
+3.网络线程对象管理了每个服务的代理对象 objectProxy，所以有几个网络线程，每个服务就有几个代理对象objectProxy
+每个网络线程 有自己对应的一组异步处理线程。异步请求效应则交给异步线程处理，同步请求响应则由同步线程处理。
+4.每个objectProxy管理了每个服务的可用节点。每个节点有由一个适配器代理AdaperProxy来表示，每个连接一个适配器。
+5，每个ServantProxy 发起请求后，将消息放到自己所在线程与服务器对应的消息队列ReqInfoQueue中，然后通过消息队列NotifyInfo(请求时间通知组)通知给网络线程，网络线程触发后，从ReqInfoQueue取出消息，发送或者其他处理。
+如果是同步请求，在收到响应消息后，唤醒请求线程。如果是异步请求，则通过消息队列，交给改网络线程对应的异步处理线程。
+
+Communicator
+ServantProxy
+ObjectProxy 
+EndpointManager
+EndpointManagerThread
+
+ServantProxyThreadData
+
+
+问题：
+1.tars 可以启动两个相同的服务吗？
+2.每个客户端是否与每个服务建立多个通道。
+3.每个服务是否可以提供多个通道
+
+
+comm.stringToProxy("TestApp.HelloServer.HelloObj@tcp -h 192.168.157.130 -p 10008" , prx);
