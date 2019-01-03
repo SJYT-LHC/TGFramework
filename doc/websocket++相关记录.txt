@@ -1,0 +1,19 @@
+websocket++ 是一个头文件库
+安装步骤
+1.解压安装包 websocketpp-0.8.1.tar.gz
+2.make install （安装头文件到/usr/local/目录下）
+3.也可以不用安装，编译是指定头文件路径
+
+编译example和测试
+1.websocket++ 的工程是用Scons 构建的，所以编译需要使用scons 编译
+编译列子和test
+https://www.zaphoyd.com/websocketpp/manual/examples-tests/building-examples-tests
+
+
+
+单独编译：
+g++ -o echo_server echo_server.cpp  -I../../  -lpthread -std=c++11  -D_WEBSOCKETPP_CPP11_STL_ -DASIO_STANDALONE
+或者
+g++ -o echo_server echo_server.cpp  -I../../   -DASIO_STANDALONE
+
+-DASIO_STANDALONE 表示单独使用asio. 只需要单独安装asio即可，否则需要安装boost.
