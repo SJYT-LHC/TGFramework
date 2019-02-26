@@ -1,0 +1,26 @@
+tarscpp非tars协议使用说明
+
+服务器端：
+服务器端需要注册自己二进制流解析函数：TC_EpollServer::protocol_functor， 该函数主要完成单个包的接收处理，保证个包消息接收完毕。
+以下是注册函数:
+void Application::addServantProtocol(const string& servant, const TC_EpollServer::protocol_functor& protocol)
+
+如：
+tars 案例中的HttpDemo 注册的HttpProtocol::parseHttp
+addServantProtocol(ServerConfig::Application + "." + ServerConfig::ServerName + ".HttpObj",&HttpProtocol::parseHttp);
+tars 案例中PushDemo 注册的parse
+addServantProtocol("Test.TestPushServer.TestPushServantObj", parse);
+
+如果是使用tars的客户端则需要注意以下内容：
+tars客户端默认是按tars协议进行处理，如果是非tars协议，需要提前注册自己协议处理函数，
+使用一下函数进行注册：
+void ServantProxy::tars_set_protocol(const ProxyProtocol& protocol, const std::string& protoName)
+
+如:
+tars 案例中PushDemo PushClient中注册的协议处理函数
+	ProxyProtocol prot;
+    prot.requestFunc = pushRequest;（完成请求的处理）
+    prot.responseFunc = pushResponse; （完成响应的处理）
+
+    _prx->tars_set_protocol(prot);
+
