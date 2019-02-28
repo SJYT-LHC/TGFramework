@@ -1,3 +1,6 @@
 [submodule "TarsCpp"]
 	path = TarsCpp
 	url = https://github.com/TarsCloud/TarsCpp.git
+[submodule "websocketpp"]
+	path = websocketpp
+	url = https://github.com/zaphoyd/websocketpp.git
